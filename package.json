@@ -24,12 +24,14 @@
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
     "cors": "^2.8.4",
+    "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "helmet": "^3.12.0",
     "mocha": "^5.0.5",
     "mongoose": "^5.0.14"
   },
   "devDependencies": {
+    "node-env-run": "^3.0.2",
     "nodemon": "^1.17.3"
   }
 }
