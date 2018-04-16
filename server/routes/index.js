@@ -4,6 +4,7 @@ const FriendsController = require('../controllers/friends');
 const router = express.Router();
 
 module.exports = (app) => {
-  app.get('/api', FriendsController.root);
+  app.get('/', FriendsController.root);
   app.post('/api/friend/new', FriendsController.create);
+  app.get('/api/friends', FriendsController.read);
 };

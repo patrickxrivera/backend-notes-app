@@ -20,5 +20,10 @@ module.exports = {
     }
 
     res.status(code.STATUS_CREATED).send(friendProps);
+  },
+
+  async read(req, res) {
+    const friends = await Friend.find({});
+    res.send(friends);
   }
 };
