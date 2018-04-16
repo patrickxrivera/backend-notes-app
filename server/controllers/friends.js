@@ -23,7 +23,13 @@ module.exports = {
   },
 
   async read(req, res) {
-    const friends = await Friend.find({});
+    const [err, friends] = await to(Friend.find({}));
+
+    if (err) {
+      const errMsg = `Couldn't get friends`;
+      next(errMsg);
+    }
+
     res.send(friends);
   }
 };
