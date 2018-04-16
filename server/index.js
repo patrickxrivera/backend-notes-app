@@ -7,7 +7,9 @@ mongoose.Promise = global.Promise;
 
 if (process.env.NODE_ENV !== 'test') {
   mongoose
-    .connect('mongodb://localhost/backend_notes_app', { useMongoClient: true })
+    .connect(
+      'mongodb://patrickprod:password@ds143099.mlab.com:43099/notes-io-prod'
+    )
     .then(() => {
       console.log('Connected to database');
     })
