@@ -1,10 +1,15 @@
 const express = require('express');
-const FriendsController = require('../controllers/friends');
+const passport = require('passport');
 
-const router = express.Router();
+const UsersController = require('../controllers/users');
 
 module.exports = (app) => {
-  app.get('/', FriendsController.root);
-  app.post('/api/friend/new', FriendsController.create);
-  app.get('/api/friends', FriendsController.read);
+  app.get(
+    '/auth/google',
+    passport.authenticate('google', {
+      scope: ['profile', 'email']
+    })
+  );
+
+  app.get('/auth/google/callback', passport.authenticate('google'));
 };
