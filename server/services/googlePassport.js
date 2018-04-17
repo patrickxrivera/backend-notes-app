@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const to = require('../utils/to');
 const keys = require('../config/keys');
 
-const User = mongoose.model('user');
+const User = mongoose.model('users');
 
 const GoogleStrategy = googlePassport.Strategy;
 

@@ -10,8 +10,8 @@ const authOptns = passport.authenticate('google', {
 
 module.exports = (app) => {
   app.get('/', UsersController.greeting);
-  app.post('/signup', UsersController.signUp);
-  app.post('/signin', requireSignIn, UsersController.signIn);
+  app.post('/api/signup', UsersController.signUp);
+  app.post('/api/signin', requireSignIn, UsersController.signIn);
   app.get('/auth/google', authOptns);
   app.get('/auth/google/callback', passport.authenticate('google'));
 };
