@@ -18,11 +18,11 @@ const UserSchema = new Schema({
   },
   lastName: {
     type: String
-  }
+  },
+  pages: [PageSchema]
 });
 
 UserSchema.pre('save', function(next) {
-  // generate the salt
   bcrypt.hash(this.password, SALT_ROUNDS, (err, hash) => {
     if (err) return next(err);
     this.password = hash;

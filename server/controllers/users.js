@@ -3,10 +3,6 @@ const code = require('../utils/statusCodes');
 const to = require('../utils/to');
 const createToken = require('../utils/createToken');
 
-// username: matt
-// password: hi
-// token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXR0IiwiaWF0IjoxNTIzOTgyMTQ3MzY5fQ.SFh7xjzbl1GJJ0CmUzIfeAfzqij_JbkFMs8MLydFkLQ
-
 const greeting = (req, res) => {
   res.send({ hi: 'there' });
 };
@@ -34,7 +30,6 @@ const signUp = async (req, res, next) => {
   const [saveErr, newUser] = await to(User.create({ username, password }));
 
   if (saveErr) {
-    console.log(saveErr);
     res.status(422).send({ error: `Can't save user` });
     return;
   }
