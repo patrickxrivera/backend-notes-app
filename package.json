@@ -6,19 +6,12 @@
   "scripts": {
     "start": "node ./server/index.js",
     "dev": "nodemon ./server/index.js",
-    "test": "NODE_ENV=test nodemon --exec 'mocha -R min' \"server/**/*.test.js\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/LambdaSchool/Mongo-I.git"
+    "test":
+      "NODE_ENV=test nodemon --exec 'mocha -R min' \"server/**/*.test.js\""
   },
   "keywords": [],
-  "author": "Lambda School",
+  "author": "Patrick Rivera",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/LambdaSchool/Mongo-I/issues"
-  },
-  "homepage": "https://github.com/LambdaSchool/Mongo-I#readme",
   "dependencies": {
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
