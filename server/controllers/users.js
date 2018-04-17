@@ -3,6 +3,9 @@ const code = require('../utils/statusCodes');
 const to = require('../utils/to');
 const createToken = require('../utils/createToken');
 
+const INVALID_CREDENTIALS = 'You must provide a username and password';
+const INVALID_USERNAME = 'Username already exists. Please try again.';
+
 const greeting = (req, res) => {
   res.send({ hi: 'there' });
 };
@@ -11,32 +14,18 @@ const signUp = async (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    res
-      .status(code.USER_ERROR)
-      .send({ error: 'You must provide a username and password' });
+    next(INVALID_CREDENTIALS);
     return;
   }
 
-  const [dbErr, user] = await to(User.findOne({ username, password }));
-
-  if (dbErr) {
-    res
-      .status(code.USER_ERROR)
-      .send({ error: 'Database error on finding user' });
-    return;
-  }
+  const user = await User.findOne({ username });
 
   if (user) {
-    res.status(code.USER_ERROR).send({ error: 'User already exists' });
+    next(INVALID_USERNAME);
     return;
   }
 
-  const [saveErr, newUser] = await to(User.create({ username, password }));
-
-  if (saveErr) {
-    res.status(code.USER_ERROR).send({ error: `Can't save user` });
-    return;
-  }
+  const newUser = await User.create({ username, password });
 
   res.send({ token: createToken(newUser) });
 };

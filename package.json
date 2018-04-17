@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node ./server/index.js",
     "dev": "nodemon ./server/index.js",
-    "test":
-      "NODE_ENV=test nodemon --exec 'mocha -R min' \"server/**/*.test.js\""
+    "test": "NODE_ENV=test nodemon --exec 'mocha -R min' \"server/**/*.test.js\""
   },
   "keywords": [],
   "author": "Patrick Rivera",
@@ -26,7 +25,8 @@
     "passport": "^0.4.0",
     "passport-google-oauth20": "^1.0.0",
     "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "ramda": "^0.25.0"
   },
   "devDependencies": {
     "node-env-run": "^3.0.2",
