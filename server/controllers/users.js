@@ -11,26 +11,30 @@ const signUp = async (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    res.status(422).send({ error: 'You must provide a username and password' });
+    res
+      .status(code.USER_ERROR)
+      .send({ error: 'You must provide a username and password' });
     return;
   }
 
-  const [dbErr, user] = await to(User.findOne({ username }));
+  const [dbErr, user] = await to(User.findOne({ username, password }));
 
   if (dbErr) {
-    res.status(422).send({ error: 'Database error on finding user' });
+    res
+      .status(code.USER_ERROR)
+      .send({ error: 'Database error on finding user' });
     return;
   }
 
   if (user) {
-    res.status(422).send({ error: 'User already exists' });
+    res.status(code.USER_ERROR).send({ error: 'User already exists' });
     return;
   }
 
   const [saveErr, newUser] = await to(User.create({ username, password }));
 
   if (saveErr) {
-    res.status(422).send({ error: `Can't save user` });
+    res.status(code.USER_ERROR).send({ error: `Can't save user` });
     return;
   }
 
