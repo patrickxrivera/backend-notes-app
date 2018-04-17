@@ -1,17 +1,14 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const PageSchema = require('./Page');
 
+const SALT_ROUNDS = 11;
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
-  googleId: {
-    type: String,
-    unique: true
-  },
   username: {
-    type: String,
-    unique: true
+    type: String
   },
   password: {
     type: String
@@ -21,9 +18,24 @@ const UserSchema = new Schema({
   },
   lastName: {
     type: String
-  },
-  pages: { PageSchema }
+  }
 });
+
+UserSchema.pre('save', function(next) {
+  // generate the salt
+  bcrypt.hash(this.password, SALT_ROUNDS, (err, hash) => {
+    if (err) return next(err);
+    this.password = hash;
+    next();
+  });
+});
+
+UserSchema.methods.checkPassword = function(potentialPassword, cb) {
+  bcrypt.compare(potentialPassword, this.password, (err, isMatch) => {
+    if (err) return cb(err);
+    cb(null, isMatch);
+  });
+};
 
 const User = mongoose.model('user', UserSchema);
 

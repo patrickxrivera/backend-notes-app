@@ -5,14 +5,12 @@ const { Schema } = mongoose;
 const PageSchema = new Schema({
   id: {
     type: Number,
-    required: true,
-    unique: true
+    required: true
   },
   parentId: {
     type: Number,
     default: null,
-    required: true,
-    unique: true
+    required: true
   },
   title: {
     type: String
