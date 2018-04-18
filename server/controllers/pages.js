@@ -10,6 +10,11 @@ const create = async ({ user, body }, res) => {
   res.send(updatedUser);
 };
 
+const read = async ({ user: { pages } }, res) => {
+  res.send(pages);
+};
+
 module.exports = {
-  create
+  create,
+  read
 };

@@ -3,7 +3,6 @@ const chaiHttp = require('chai-http');
 
 const Page = require('../../models/Page');
 const User = require('../../models/User');
-const initTestSetup = require('../testSetup');
 const code = require('../../utils/statusCodes');
 const app = require('../../app');
 
