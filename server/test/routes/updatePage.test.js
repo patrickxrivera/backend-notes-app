@@ -1,3 +1,5 @@
+const filter = require('ramda/src/filter');
+const curry = require('ramda/src/curry');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
@@ -41,7 +43,7 @@ const createPage = (page) =>
     .send(page);
 
 describe('PUT /api/page', () => {
-  let postId;
+  let pageId;
 
   before(async () => {
     let res = await createUser(firstSeededUser);
@@ -55,40 +57,49 @@ describe('PUT /api/page', () => {
     await createPage(firstPage);
     res = await createPage(secondPage);
 
-    postId = res.body.pages[1]._id;
+    pageId = res.body.pages[1];
     return;
   });
+
+  const isTargetPage = curry((targetPageId, { _id }) =>
+    _id.equals(targetPageId)
+  );
 
   it('should update a page', async () => {
     const route = `/api/page`;
 
-    const updatedPost = { _id: postId, title: 'Why I Love Programming' };
+    const updatedPage = { _id: pageId, title: 'Why I Love Programming' };
 
     const res = await chai
       .request(app)
       .put(route)
       .set('authorization', token)
-      .send(updatedPost);
+      .send(updatedPage);
+
+    const user = await User.findById(res.body.userId).populate('pages');
+    const targetPage = filter(isTargetPage(res.body._id), user.pages);
 
     expect(res).to.have.status(code.OK);
-    expect(res.body.pages).to.have.length(1);
-    expect(res.body.pages[0]).to.include(page);
+    expect(res.body).to.include(updatedPage);
+    expect(targetPage[0].title).to.equal(updatedPage.title);
   });
 
-  xit('should thrown an error when given an invalid token', async () => {
-    const page = { parentId: null, title: 'Engineering' };
+  it('should thrown an error when given an invalid token', async () => {
+    const route = `/api/page`;
 
-    const route = `/api/page/new`;
+    const updatedPage = { _id: pageId, title: 'Why I Love Programming' };
+
     const res = await chai
       .request(app)
-      .post(route)
+      .put(route)
       .set('authorization', 123)
-      .send(page);
+      .send(updatedPage);
 
     expect(res).to.have.status(code.UNAUTHORIZED);
   });
 
   after(async () => {
     await User.remove({});
+    await Page.remove({});
   });
 });

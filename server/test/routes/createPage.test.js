@@ -59,5 +59,6 @@ describe('POST /api/page/new', () => {
 
   after(async () => {
     await User.remove({});
+    await Page.remove({});
   });
 });

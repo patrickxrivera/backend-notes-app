@@ -46,7 +46,7 @@ describe('GET /api/pages', () => {
     return;
   });
 
-  it.only('should return all pages', async () => {
+  it('should return all pages', async () => {
     const route = '/api/pages';
 
     const res = await chai
@@ -72,5 +72,6 @@ describe('GET /api/pages', () => {
 
   after(async () => {
     await User.remove({});
+    await Page.remove({});
   });
 });

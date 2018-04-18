@@ -1,8 +1,5 @@
 const map = require('ramda/src/map');
-const when = require('ramda/src/when');
 const curry = require('ramda/src/curry');
-const equals = require('ramda/src/equals');
-const merge = require('ramda/src/merge');
 
 const User = require('../models/User');
 const Page = require('../models/Page');
@@ -14,6 +11,8 @@ const create = async ({ user, body }, res) => {
   const newPage = await Page.create(pageBody);
 
   const targetUser = await User.findById(user._id);
+
+  // Add new page to targetUser's pages w/o mutating directly
   targetUser.pages = [...targetUser.pages, newPage];
 
   await targetUser.save();
@@ -23,29 +22,33 @@ const create = async ({ user, body }, res) => {
 
 const read = async ({ user }, res) => {
   const targetUser = await User.findById(user._id).populate('pages');
-
   res.send(targetUser.pages);
 };
 
-// const isTargetPage = (body, page) => page._id.equals(body._id);
-//
-// const updateUser = curry((body, page) => {
-//   // console.log(page);
-//   return isTargetPage(body, page) ? { ...page, ...body } : page;
-// });
-//
+// helper function for update that gets the target page
+// and updates the page with the request body
+const updateTargetPage = curry((body, page) => {
+  if (page._id.equals(body._id)) {
+    page.set(body);
+  }
+  return page;
+});
+
 const update = async ({ user, body }, res) => {
-  //   const targetUser = await User.findById(user.id);
-  //   // const updatedPages = map(updateUser(body), targetUser.pages);
-  //   // console.log(updatedPages);
-  //   // targetUser.pages = updatedPages;
-  //   //
-  //   // const updatedUser = await targetUser.save();
-  //
-  //   const updatedPages = targetUser.pages.map((page) => {
-  //     return isTargetPage(body, page) ? { ...page, ...body } : page;
-  //   });
-  res.send({});
+  const targetUser = await User.findById(user._id).populate('pages');
+
+  const result = map(updateTargetPage(body), targetUser.pages);
+
+  // Add updated page to targetUser's pages
+  targetUser.pages = result;
+  await targetUser.save();
+
+  // Update the targetPage on the Page model
+  const targetPage = await Page.findById(body._id);
+  targetPage.set(body);
+  const savedPage = await targetPage.save();
+
+  res.send(savedPage);
 };
 
 module.exports = {
