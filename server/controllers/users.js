@@ -27,15 +27,22 @@ const signUp = async (req, res, next) => {
 
   const newUser = await User.create({ username, password });
 
-  res.send({ token: createToken(newUser) });
+  const token = createToken(newUser);
+
+  res.send({ token });
 };
 
 const signIn = (req, res) => {
-  res.send({ success: true, token: createToken(req.user) });
+  res.send({ token: createToken(req.user) });
+};
+
+const secret = (req, res) => {
+  res.send({ message: 'Super secret code is 123' });
 };
 
 module.exports = {
   greeting,
   signUp,
-  signIn
+  signIn,
+  secret
 };
