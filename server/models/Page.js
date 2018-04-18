@@ -3,19 +3,17 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const PageSchema = new Schema({
-  id: {
-    type: Number,
-    required: true
-  },
   parentId: {
     type: Number,
-    default: null,
-    required: true
+    default: null
   },
   title: {
     type: String
   },
   emoji: {
+    type: String
+  },
+  content: {
     type: String
   },
   updatedAt: {

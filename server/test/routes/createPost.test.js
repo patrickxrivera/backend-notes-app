@@ -1,0 +1,65 @@
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+
+const Page = require('../../models/Page');
+const User = require('../../models/User');
+const initTestSetup = require('../testSetup');
+const code = require('../../utils/statusCodes');
+const app = require('../../app');
+
+chai.use(chaiHttp);
+const expect = chai.expect;
+
+const seededUser = {
+  username: 'samantha',
+  password: '314dsfadkfeaf',
+  pages: []
+};
+
+describe('POST /api/page/new', () => {
+  let token;
+
+  before(async () => {
+    const route = '/api/signup';
+
+    const res = await chai
+      .request(app)
+      .post(route)
+      .send(seededUser);
+
+    token = res.body.token;
+    return;
+  });
+
+  it('should create a new page', async () => {
+    const page = { parentId: null, title: 'Engineering' };
+
+    const route = `/api/page/new`;
+    const res = await chai
+      .request(app)
+      .post(route)
+      .set('authorization', token)
+      .send(page);
+
+    expect(res).to.have.status(code.OK);
+    expect(res.body.pages).to.have.length(1);
+    expect(res.body.pages[0]).to.include(page);
+  });
+
+  it('should thrown an error when given an invalid token', async () => {
+    const page = { parentId: null, title: 'Engineering' };
+
+    const route = `/api/page/new`;
+    const res = await chai
+      .request(app)
+      .post(route)
+      .set('authorization', 123)
+      .send(page);
+
+    expect(res).to.have.status(code.UNAUTHORIZED);
+  });
+
+  after(async () => {
+    await User.remove({});
+  });
+});
