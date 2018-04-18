@@ -1,8 +1,10 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const JwtStrategy = require('passport-jwt').Strategy;
+const curry = require('ramda/src/curry');
 const { ExtractJwt } = require('passport-jwt');
 
+const to = require('../utils/to');
 const User = require('../models/User');
 const keys = require('../config/keys');
 
@@ -10,19 +12,22 @@ const localOptions = {
   usernameField: 'username'
 };
 
+const handlePasswordCheck = curry((done, err, isMatch) => {
+  if (err) return done(err);
+  if (!isMatch) return done(null, false);
+
+  return done(null, this);
+});
+
 const localLogin = new LocalStrategy(
   localOptions,
-  (username, password, done) => {
-    User.findOne({ username }, (err, user) => {
-      if (err) return done(err);
-      if (!user) return done(null, false);
+  async (username, password, done) => {
+    const [userErr, user] = await to(User.findOne({ username }));
 
-      user.checkPassword(password, (err, isMatch) => {
-        if (err) return done(err);
-        if (!isMatch) return done(null, false);
-        return done(null, user);
-      });
-    });
+    if (userErr) return done(userErr);
+    if (!user) return done(null, false);
+
+    await user.checkPassword(password, handlePasswordCheck(done));
   }
 );
 
@@ -31,12 +36,13 @@ const jwtOptions = {
   secretOrKey: keys.tokenSecret
 };
 
-const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
-  User.findOne({ username: payload.sub }, (err, user) => {
-    if (err) return done(err, false);
-    if (user) return done(null, user);
-    done(null, false);
-  });
+const jwtLogin = new JwtStrategy(jwtOptions, async (payload, done) => {
+  const [err, user] = await to(User.findOne({ username: payload.sub }));
+
+  if (err) return done(err, false);
+  if (user) return done(null, user);
+
+  done(null, false);
 });
 
 passport.use(localLogin);

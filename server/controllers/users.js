@@ -1,6 +1,5 @@
 const User = require('../models/User');
 const code = require('../utils/statusCodes');
-const to = require('../utils/to');
 const createToken = require('../utils/createToken');
 
 const INVALID_CREDENTIALS = 'You must provide a username and password';
