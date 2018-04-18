@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const PageSchema = new Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   parentId: {
     type: Number,
     default: null
@@ -24,4 +28,4 @@ const PageSchema = new Schema({
   }
 });
 
-module.exports = PageSchema;
+module.exports = mongoose.model('pages', PageSchema);

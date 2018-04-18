@@ -19,7 +19,7 @@ const UserSchema = new Schema({
   lastName: {
     type: String
   },
-  pages: [PageSchema]
+  pages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Page' }]
 });
 
 UserSchema.pre('save', function(next) {

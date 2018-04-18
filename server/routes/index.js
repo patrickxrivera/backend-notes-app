@@ -15,6 +15,7 @@ module.exports = (app) => {
   app.post('/api/signin', requireSignIn, UsersController.signIn);
   app.post('/api/page/new', requireAuth, PagesController.create);
   app.get('/api/pages', requireAuth, PagesController.read);
+  app.put('/api/page', requireAuth, PagesController.update);
   app.get('/auth/google', googleAuthOptns);
   app.get('/auth/google/callback', passport.authenticate('google'));
 };

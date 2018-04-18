@@ -17,6 +17,7 @@ const seededUser = {
 
 describe('POST /api/page/new', () => {
   let token;
+  let userId;
 
   before(async () => {
     const route = '/api/signup';
@@ -26,11 +27,12 @@ describe('POST /api/page/new', () => {
       .post(route)
       .send(seededUser);
 
+    userId = res.body.userId;
     token = res.body.token;
     return;
   });
 
-  it('should create a new page', async () => {
+  it.only('should create a new page', async () => {
     const page = { parentId: null, title: 'Engineering' };
 
     const route = `/api/page/new`;
@@ -40,9 +42,8 @@ describe('POST /api/page/new', () => {
       .set('authorization', token)
       .send(page);
 
-    expect(res).to.have.status(code.OK);
+    expect(res).to.have.status(code.CREATED);
     expect(res.body.pages).to.have.length(1);
-    expect(res.body.pages[0]).to.include(page);
   });
 
   it('should thrown an error when given an invalid token', async () => {
