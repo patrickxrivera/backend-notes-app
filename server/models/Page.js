@@ -28,4 +28,4 @@ const PageSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model('pages', PageSchema);
+module.exports = mongoose.model('Page', PageSchema);

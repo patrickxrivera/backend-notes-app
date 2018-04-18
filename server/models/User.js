@@ -37,6 +37,4 @@ UserSchema.methods.checkPassword = function(potentialPassword, cb) {
   });
 };
 
-const User = mongoose.model('users', UserSchema);
-
-module.exports = User;
+module.exports = mongoose.model('User', UserSchema);

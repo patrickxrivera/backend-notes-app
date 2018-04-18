@@ -17,7 +17,6 @@ const seededUser = {
 
 describe('POST /api/page/new', () => {
   let token;
-  let userId;
 
   before(async () => {
     const route = '/api/signup';
@@ -27,12 +26,11 @@ describe('POST /api/page/new', () => {
       .post(route)
       .send(seededUser);
 
-    userId = res.body.userId;
     token = res.body.token;
     return;
   });
 
-  it.only('should create a new page', async () => {
+  it('should create a new page', async () => {
     const page = { parentId: null, title: 'Engineering' };
 
     const route = `/api/page/new`;

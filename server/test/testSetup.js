@@ -15,17 +15,23 @@ module.exports = () => {
 
   before((done) => {
     users = mongoose.connection.collections.users;
+    pages = mongoose.connection.collections.pages;
     users
       .drop()
-      .then(() => done())
+      .then(() => {
+        pages.drop().then(() => done());
+      })
       .catch(() => done());
   });
 
   after((done) => {
     users = mongoose.connection.collections.users;
+    pages = mongoose.connection.collections.pages;
     users
       .drop()
-      .then(() => done())
+      .then(() => {
+        pages.drop().then(() => done());
+      })
       .catch(() => done());
   });
 };

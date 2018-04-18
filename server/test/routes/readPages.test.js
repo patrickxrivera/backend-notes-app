@@ -46,7 +46,7 @@ describe('GET /api/pages', () => {
     return;
   });
 
-  it('should return all pages', async () => {
+  it.only('should return all pages', async () => {
     const route = '/api/pages';
 
     const res = await chai

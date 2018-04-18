@@ -13,16 +13,18 @@ const create = async ({ user, body }, res) => {
   const pageBody = { ...body, userId: user._id };
   const newPage = await Page.create(pageBody);
 
-  const userToUpdate = await User.findById(user._id);
-  userToUpdate.pages = [...userToUpdate.pages, newPage];
+  const targetUser = await User.findById(user._id);
+  targetUser.pages = [...targetUser.pages, newPage];
 
-  await userToUpdate.save();
+  await targetUser.save();
 
-  res.status(code.CREATED).send(userToUpdate);
+  res.status(code.CREATED).send(targetUser);
 };
 
-const read = async ({ user: { pages } }, res) => {
-  res.send(pages);
+const read = async ({ user }, res) => {
+  const targetUser = await User.findById(user._id).populate('pages');
+
+  res.send(targetUser.pages);
 };
 
 // const isTargetPage = (body, page) => page._id.equals(body._id);
