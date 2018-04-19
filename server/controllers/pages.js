@@ -1,5 +1,6 @@
 const map = require('ramda/src/map');
 const curry = require('ramda/src/curry');
+const filter = require('ramda/src/filter');
 
 const User = require('../models/User');
 const Page = require('../models/Page');
@@ -8,6 +9,9 @@ const to = require('../utils/to');
 
 const create = async ({ user, body }, res) => {
   const pageBody = { ...body, userId: user._id };
+
+  let test = await Page.find({});
+
   const newPage = await Page.create(pageBody);
 
   const targetUser = await User.findById(user._id);
@@ -17,7 +21,7 @@ const create = async ({ user, body }, res) => {
 
   await targetUser.save();
 
-  res.status(code.CREATED).send(targetUser);
+  res.status(code.CREATED).send(targetUser.pages);
 };
 
 const read = async ({ user }, res) => {
@@ -46,13 +50,27 @@ const update = async ({ user, body }, res) => {
   // Update the targetPage on the Page model
   const targetPage = await Page.findById(body._id);
   targetPage.set(body);
-  const savedPage = await targetPage.save();
+  const updatedPage = await targetPage.save();
 
-  res.send(savedPage);
+  res.send(updatedPage);
+};
+
+const isTargetPage = curry((body, page) => page._id.equals(body._id));
+
+const remove = async ({ user, body }, res) => {
+  const page = await Page.findByIdAndRemove(body._id);
+
+  const targetUser = await User.findById(user._id);
+  targetUser.pages = filter(isTargetPage, targetUser.pages);
+
+  await targetUser.save();
+
+  res.status(code.ACCEPTED).send({ success: true });
 };
 
 module.exports = {
   create,
   read,
-  update
+  update,
+  remove
 };

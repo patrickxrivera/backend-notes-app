@@ -30,7 +30,7 @@ describe('POST /api/page/new', () => {
     return;
   });
 
-  it('should create a new page', async () => {
+  it.only('should create a new page', async () => {
     const page = { parentId: null, title: 'Engineering' };
 
     const route = `/api/page/new`;
@@ -41,7 +41,7 @@ describe('POST /api/page/new', () => {
       .send(page);
 
     expect(res).to.have.status(code.CREATED);
-    expect(res.body.pages).to.have.length(1);
+    expect(res.body).to.have.length(1);
   });
 
   it('should thrown an error when given an invalid token', async () => {
