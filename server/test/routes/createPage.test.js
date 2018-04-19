@@ -41,7 +41,7 @@ describe('POST /api/page/new', () => {
       .send(page);
 
     expect(res).to.have.status(code.CREATED);
-    expect(res.body).to.have.length(1);
+    expect(res.body).to.include(page);
   });
 
   it('should thrown an error when given an invalid token', async () => {

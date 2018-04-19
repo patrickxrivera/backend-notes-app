@@ -57,7 +57,7 @@ describe('PUT /api/page', () => {
     await createPage(firstPage);
     res = await createPage(secondPage);
 
-    pageId = res.body[1];
+    pageId = res.body._id;
     return;
   });
 

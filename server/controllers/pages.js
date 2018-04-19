@@ -1,6 +1,7 @@
 const map = require('ramda/src/map');
 const curry = require('ramda/src/curry');
 const filter = require('ramda/src/filter');
+const isNil = require('ramda/src/isNil');
 
 const User = require('../models/User');
 const Page = require('../models/Page');
@@ -21,7 +22,7 @@ const create = async ({ user, body }, res) => {
 
   await targetUser.save();
 
-  res.status(code.CREATED).send(targetUser.pages);
+  res.status(code.CREATED).send(newPage);
 };
 
 const read = async ({ user }, res) => {
@@ -58,7 +59,14 @@ const update = async ({ user, body }, res) => {
 const isTargetPage = curry((body, page) => page._id.equals(body._id));
 
 const remove = async ({ user, body }, res) => {
-  const page = await Page.findByIdAndRemove(body._id);
+  const [err, page] = await to(Page.findByIdAndRemove(body._id));
+
+  if (err || isNil(page)) {
+    res
+      .status(code.USER_ERROR)
+      .send({ error: 'You must provide a proper pageId.' });
+    return;
+  }
 
   const targetUser = await User.findById(user._id);
   targetUser.pages = filter(isTargetPage, targetUser.pages);

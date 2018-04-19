@@ -57,7 +57,7 @@ describe('DELETE /api/page', () => {
     await createPage(firstPage);
     res = await createPage(secondPage);
 
-    pageId = res.body[1];
+    pageId = res.body._id;
     return;
   });
 
@@ -83,6 +83,46 @@ describe('DELETE /api/page', () => {
     expect(res).to.have.status(code.ACCEPTED);
     expect(res.body.success).to.be.true;
     expect(oldCount - 1).to.equal(newCount);
+  });
+
+  it('should return an error message when provided an incorrect page id', async () => {
+    const route = `/api/page`;
+
+    const oldCount = await Page.count();
+
+    const pageToDelete = { _id: 123 };
+
+    const res = await chai
+      .request(app)
+      .delete(route)
+      .set('authorization', token)
+      .send(pageToDelete);
+
+    const newCount = await Page.count();
+
+    expect(res).to.have.status(code.USER_ERROR);
+    expect(res.body.error).to.equal('You must provide a proper pageId.');
+    expect(oldCount).to.equal(newCount);
+  });
+
+  it('should return an error message when not provided a page id', async () => {
+    const route = `/api/page`;
+
+    const oldCount = await Page.count();
+
+    const pageToDelete = {};
+
+    const res = await chai
+      .request(app)
+      .delete(route)
+      .set('authorization', token)
+      .send(pageToDelete);
+
+    const newCount = await Page.count();
+
+    expect(res).to.have.status(code.USER_ERROR);
+    expect(res.body.error).to.equal('You must provide a proper pageId.');
+    expect(oldCount).to.equal(newCount);
   });
 
   it('should thrown an error when given an invalid token', async () => {
