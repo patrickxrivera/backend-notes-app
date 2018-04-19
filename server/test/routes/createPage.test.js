@@ -30,7 +30,7 @@ describe('POST /api/page/new', () => {
     return;
   });
 
-  it.only('should create a new page', async () => {
+  it('should create a new page', async () => {
     const page = { parentId: null, title: 'Engineering' };
 
     const route = `/api/page/new`;
