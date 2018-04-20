@@ -34,7 +34,8 @@ describe('POST /api/signin', () => {
       .send(signInCredentials);
 
     expect(res).to.have.status(code.OK);
-    expect(res.body.firstName).to.be.a('string');
+    expect(res.body.username).to.be.equal(signUpCredentials.username);
+    expect(res.body.firstName).to.equal(signUpCredentials.firstName);
     expect(res.body.userId).to.be.a('string');
     expect(res.body.token).to.be.a('string');
   });

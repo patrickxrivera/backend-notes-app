@@ -36,6 +36,7 @@ const signUp = async (req, res, next) => {
 const signIn = ({ user }, res) => {
   res.send({
     firstName: user.firstName,
+    username: user.username,
     userId: user._id,
     token: createToken(user)
   });
