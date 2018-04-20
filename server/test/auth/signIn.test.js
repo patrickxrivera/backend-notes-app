@@ -9,29 +9,32 @@ const app = require('../../app');
 chai.use(chaiHttp);
 const expect = chai.expect;
 
-const credentials = { username: 'bob', password: 'qoeru1934p' };
+const signUpCredentials = { firstName: 'Bob', username: 'bob', password: 'qoeru1934p' };
+const signInCredentials = { username: 'bob', password: 'qoeru1934p' };
 
 describe('POST /api/signin', () => {
-  const signInRoute = '/api/signin';
-
   before(async () => {
     const route = '/api/signup';
 
-    const res = await chai
+    await chai
       .request(app)
       .post(route)
-      .send(credentials);
+      .send(signUpCredentials);
 
     return;
   });
 
   it('should sign in a user', async () => {
+    const signInRoute = '/api/signin';
+
     const res = await chai
       .request(app)
       .post(signInRoute)
-      .send(credentials);
+      .send(signInCredentials);
 
     expect(res).to.have.status(code.OK);
+    expect(res.body.firstName).to.be.a('string');
+    expect(res.body.userId).to.be.a('string');
     expect(res.body.token).to.be.a('string');
   });
 

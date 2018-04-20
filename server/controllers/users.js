@@ -10,7 +10,7 @@ const greeting = (req, res) => {
 };
 
 const signUp = async (req, res, next) => {
-  const { username, password } = req.body;
+  const { firstName, username, password } = req.body;
 
   if (!username || !password) {
     next(INVALID_CREDENTIALS);
@@ -24,13 +24,21 @@ const signUp = async (req, res, next) => {
     return;
   }
 
-  const newUser = await User.create({ username, password });
+  const newUser = await User.create({ firstName, username, password });
 
-  res.send({ userId: newUser._id, token: createToken(newUser) });
+  res.send({
+    firstName: newUser.firstName,
+    userId: newUser._id,
+    token: createToken(newUser)
+  });
 };
 
 const signIn = ({ user }, res) => {
-  res.send({ userId: user._id, token: createToken(user) });
+  res.send({
+    firstName: user.firstName,
+    userId: user._id,
+    token: createToken(user)
+  });
 };
 
 module.exports = {

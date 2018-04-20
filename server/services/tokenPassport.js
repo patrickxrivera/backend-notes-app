@@ -12,24 +12,19 @@ const localOptions = {
   usernameField: 'username'
 };
 
-const handlePasswordCheck = curry((done, err, isMatch) => {
-  if (err) return done(err);
-  if (!isMatch) return done(null, false);
+const localLogin = new LocalStrategy(localOptions, async (username, password, done) => {
+  const [userErr, user] = await to(User.findOne({ username }));
 
-  return done(null, this);
+  if (userErr) return done(userErr);
+  if (!user) return done(null, false);
+
+  user.checkPassword(password, (err, isMatch) => {
+    if (err) return done(err);
+    if (!isMatch) return done(null, false);
+
+    return done(null, user);
+  });
 });
-
-const localLogin = new LocalStrategy(
-  localOptions,
-  async (username, password, done) => {
-    const [userErr, user] = await to(User.findOne({ username }));
-
-    if (userErr) return done(userErr);
-    if (!user) return done(null, false);
-
-    await user.checkPassword(password, handlePasswordCheck(done));
-  }
-);
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),

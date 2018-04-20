@@ -11,7 +11,11 @@ initTestSetup();
 chai.use(chaiHttp);
 const expect = chai.expect;
 
-const credentials = { username: 'bob', password: 'qoeru1934p' };
+const credentials = {
+  firstName: 'Bob',
+  username: 'bob',
+  password: 'qoeru1934p'
+};
 const noUsername = { password: credentials.password };
 const noPassword = { username: credentials.username };
 const emptyPassword = { username: credentials.username, password: '' };
@@ -45,7 +49,6 @@ describe('POST /api/signup', () => {
 
   it('should sign up a user', async () => {
     const route = '/api/signup';
-    const test = await User.find({});
 
     const res = await chai
       .request(app)
@@ -54,6 +57,8 @@ describe('POST /api/signup', () => {
 
     expect(res).to.have.status(code.OK);
     expect(res.body.token).to.be.a('string');
+    expect(res.body.userId).to.be.a('string');
+    expect(res.body.firstName).to.equal(credentials.firstName);
   });
 
   it('should report an unavailable username', async () => {
