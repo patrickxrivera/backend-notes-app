@@ -11,6 +11,7 @@ const expect = chai.expect;
 
 const signUpCredentials = { firstName: 'Bob', username: 'bob', password: 'qoeru1934p' };
 const signInCredentials = { username: 'bob', password: 'qoeru1934p' };
+const wrongPassword = { username: 'bob', password: 'wrongpassword' };
 
 describe('POST /api/signin', () => {
   before(async () => {
@@ -36,6 +37,17 @@ describe('POST /api/signin', () => {
     expect(res.body.firstName).to.be.a('string');
     expect(res.body.userId).to.be.a('string');
     expect(res.body.token).to.be.a('string');
+  });
+
+  it('should handle wrong password', async () => {
+    const signInRoute = '/api/signin';
+
+    const res = await chai
+      .request(app)
+      .post(signInRoute)
+      .send(wrongPassword);
+
+    expect(res).to.have.status(code.UNAUTHORIZED);
   });
 
   after(async () => {
